@@ -37,7 +37,7 @@ module Xen
       end
 
       def instances_from_output(output)
-        output[:stdout].split("\n")[1..-1].map do |line|
+        output.split("\n")[1..-1].map do |line|
           instance_from_output(line)
         end
       end
