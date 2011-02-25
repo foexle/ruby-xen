@@ -3,7 +3,6 @@ require 'log4r'
 module Log
   # Singleton Class to logging debugging and error states in logfile
   class Logger
-    include Log4r
     attr_accessor :log
 
 
@@ -22,16 +21,16 @@ module Log
 
     # Initializing and configuring the logger object
     def self.initialize_logger(file_name, log_level)
-      @log = Logger.new("xen_log")
+      @log = Log4r::Logger.new("xen_log")
 
-      @log.outputters = Outputter.stdout
+      @log.outputters = Log4r::Outputter.stdout
 
-      file = FileOutputter.new('fileOutputter', :filename => file_name, :trunc => true)
+      file = Log4r::FileOutputter.new('fileOutputter', :filename => file_name, :trunc => true)
 
 
       @log.add(file)
       @log.level = self.convert_loglevel(log_level)
-      format = PatternFormatter.new(:pattern => "[%l] %d :: %m")
+      format = Log4r::PatternFormatter.new(:pattern => "[%l] %d :: %m")
       file.formatter = format
     end
 

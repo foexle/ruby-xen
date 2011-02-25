@@ -1,4 +1,4 @@
-require 'log/loghandler'
+require 'log/logger'
 
 module System
   class Command
