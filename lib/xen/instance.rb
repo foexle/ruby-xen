@@ -14,13 +14,9 @@ module Xen
       end
 
       def find_by_name(name)
-        domu = System::Command.exec_command("xm list #{name}", :command_level => 1)
+        output = System::Command.exec_command("xm list #{name}", :command_level => 1)
 
-        if domu[:exitstatus] == 0
-          domu[:stdout] = instance_from_output(domu[:stdout].split("\n").last)
-        end
-
-        return domu
+        instance_from_output(output[:stdout].split("\n").last)
       end
 
       # Vars = :id, :name, :memory, :hdd, :cpus, :status
