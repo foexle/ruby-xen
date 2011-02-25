@@ -1,0 +1,15 @@
+nbproject/*
+nbproject/**/*
+log/*.log
+tmp/**/*
+tmp/webrat*
+log/*.pid
+db/schema.rb
+.DS_Store
+*.swp
+*~
+*.orig
+config/database.yml
+.rvmrc
+public/videos
+config/newrelic.yml
