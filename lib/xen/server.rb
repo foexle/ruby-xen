@@ -21,6 +21,10 @@ module Xen
       logger.info("Handling xen task ...")
     end
 
+    def instances
+      Xen::Instance.all
+    end
+
     def logger
       self.class.logger
     end
@@ -40,15 +44,10 @@ module Xen
       return domus
     end
 
-    
-    # Stats am mew instance
-    # ==Params:
-    # * +:name+ - Name of instance
     def start(name)
       return System::Command.exec_command("xm create #{name}.cfg", :command_level => 2)
     end
 
-    # Vars = :id, :name, :memory, :hdd, :cpus, :status
     def create(vars)
       logger.info("Creating new Xen instance with name: #{vars[:name]} ...")
       pw_return = Xen::Util.generate_root_password
@@ -61,7 +60,6 @@ module Xen
       return pw
     end
 
-    # Destory an instance 
     def destroy(name)
       instance = self.get(name)
       if instance[:exitstatus] == 0
@@ -89,17 +87,6 @@ module Xen
       end
       return domu
     end
-        
-    def migrate(name, destination)
-      if self.has? name then
-        `xm migrate --live #{name} #{destination}`
-        self.success? $?
-      else
-        false
-      end
-    end
-
-  
 
     private
 

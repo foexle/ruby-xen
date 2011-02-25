@@ -20,6 +20,7 @@ module Xen
         return domu
       end
 
+      # Vars = :id, :name, :memory, :hdd, :cpus, :status
       def create(attributes = {})
         logger.info("Creating new Xen instance with name: #{attributes[:name]} ...")
 
@@ -62,6 +63,10 @@ module Xen
 
     def start
       System::Command.exec_command("xm create #{name}.cfg", :command_level => 2)
+    end
+
+    def migrate(destination)
+      System::Command.exec_command("xm migrate --live #{name} #{destination}", :command_level => 2)
     end
 
     def destroy
