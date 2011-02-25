@@ -28,9 +28,9 @@ module Xen
 
         if password[:exitstatus] == 0
           command = <<-cmd
-            xen-create-image --hostname=#{attributes[:name]} --password=#{password}
-                             --vcpus=#{attributes[:cpus]} --memory=#{attributes[:memory]} --size=#{attributes[:hdd]}
-                             --arch=amd64 --dist=lucid
+            xen-create-image --hostname=#{attributes[:hostname]} --password=#{password[:stdout]}
+                             --vcpus=#{attributes[:vcpus]} --memory=#{attributes[:memory]} --size=#{attributes[:size]}
+                             --arch=#{attributes[:arch]} --dist=#{attributes[:dist]}
           cmd
 
           System::Command.exec_command(command, :command_level => 2)
