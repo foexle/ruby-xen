@@ -18,6 +18,7 @@ module Xen
 
         instance_from_output(output[:stdout].split("\n").last)
       end
+      alias :[], :find_by_name
 
       # Vars = :id, :name, :memory, :hdd, :cpus, :status
       def create(attributes = {})
