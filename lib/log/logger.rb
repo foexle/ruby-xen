@@ -10,7 +10,7 @@ module Log
     # ==Params
     # * +filename+  : Path and filename of logdatei
     # * +log_level+ : Which loglevel are using
-    def self.log(options = {:log_level => 1}, filename = "/var/log/xen/xen-gem.log")
+    def self.log(options = {:log_level => 1}, filename = "/tmp/xen-gem.log")
       if @log
         return @log
       else
