@@ -5,6 +5,13 @@ require 'xen/util'
 
 module Xen
   class Instance
+    STATE_RUNNING  = 'r'
+    STATE_BLOCKED  = 'b'
+    STATE_SHUTDOWN = 's'
+    STATE_CRASHED  = 'c'
+    STATE_DYING    = 'd'
+    STATE_PAUSED   = 'p'
+
     attr_accessor :name, :memory, :dom_id, :vcpus, :state, :time
 
     class << self
@@ -93,37 +100,37 @@ module Xen
 
     def state_text
       case state
-      when 'r': 'running'
-      when 'b': 'blocked'
-      when 's': 'shutdown'
-      when 'c': 'crashed'
-      when 'd': 'dying'
-      when 'p': 'paused'
+      when STATE_RUNNING: 'running'
+      when STATE_BLOCKED: 'blocked'
+      when STATE_SHUTDOWN: 'shutdown'
+      when STATE_CRASHED: 'crashed'
+      when STATE_DYING: 'dying'
+      when STATE_PAUSED: 'paused'
       end
     end
 
     def running?
-      state == 'r'
+      state == STATE_RUNNING
     end
 
     def blocked?
-      state == 'b'
+      state == STATE_BLOCKED
     end
 
     def shutdown?
-      state == 's'
+      state == STATE_SHUTDOWN
     end
 
     def crashed?
-      state == 'c'
+      state == STATE_CRASHED
     end
 
     def dying?
-      state == 'd'
+      state == STATE_DYING
     end
 
     def paused?
-      state == 'p'
+      state == STATE_PAUSED
     end
   end
 end
