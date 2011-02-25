@@ -48,6 +48,8 @@ module Xen
           cmd
 
           System::Command.exec_command(command, :command_level => 2)
+
+          find_by_name(attributes[:hostname])
         end
       end
 
