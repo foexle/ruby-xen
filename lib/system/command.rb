@@ -1,8 +1,7 @@
+require 'log/loghandler'
+
 module System
-  require File.dirname(__FILE__) + "/../log/loghandler"
   class Command
-
-
     # Führt ein Systemkommando aus. Der unterschied zu system() ist, das hier der korrekte
     # Exitcode zurückgegeben wird und darüber hinaus, wird die STERR in die Log geschrieben.
     # Wie schwerwiegend der Fehler für das Backuptool ist, kann mittels des command_level entschieden werden.

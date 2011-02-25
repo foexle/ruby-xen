@@ -1,10 +1,8 @@
-module Log
-  require 'rubygems'
-  require 'log4r'
-  
+require 'log4r'
 
+module Log
   # Singleton Class to logging debugging and error states in logfile
-  class LibLoghandler
+  class Logger
     include Log4r
     attr_accessor :log
 

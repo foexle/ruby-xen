@@ -1,3 +1,6 @@
+require 'log/logger'
+require 'system/command'
+
 module Xen
   class Instance
     attr_accessor :name, :memory, :dom_id, :vcpus, :state, :time
@@ -52,7 +55,7 @@ module Xen
       end
 
       def logger
-        @@logger ||= Log::LibLoghandler.log(:log_level => Xen::Server::LOG_LEVEL)
+        @@logger ||= Log::Logger.log(:log_level => Xen::Server::LOG_LEVEL)
       end
     end
 
