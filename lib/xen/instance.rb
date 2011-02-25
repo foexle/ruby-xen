@@ -12,7 +12,7 @@ module Xen
     STATE_DYING    = 'd'
     STATE_PAUSED   = 'p'
 
-    attr_accessor :name, :memory, :dom_id, :vcpus, :state, :time
+    attr_accessor :dom_id, :name, :memory, :vcpus, :state, :time
 
     class << self
       def all
