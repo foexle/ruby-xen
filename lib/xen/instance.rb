@@ -29,6 +29,11 @@ module Xen
       end
       alias :[] :find_by_name
 
+      def find_attributes_by_name(name)
+        output = System::Command.exec_command("xm list #{name}", :command_level => 1)
+        attributes_from_output(output[:stdout])
+      end
+
       # Vars = :id, :name, :memory, :hdd, :cpus, :status
       def create(attributes = {})
         logger.info("Creating new Xen instance with name #{attributes[:hostname]} ...")
@@ -46,6 +51,12 @@ module Xen
         end
       end
 
+      def start(name)
+        instance = new(name)
+        instance.start
+        instance
+      end
+
       def instances_from_output(output)
         output.split("\n")[1..-1].map do |line|
           instance_from_output(line)
@@ -55,9 +66,16 @@ module Xen
       def instance_from_output(output)
         logger.debug("Finding #{output} ...")
 
+        attributes = attributes_from_output(output)
+        return unless attributes
+
+        Instance.new(attributes[:name], attributes) #:time => $6.strip)
+      end
+
+      def attributes_from_output(output)
         return unless output.match(/(.*)\s+(\d+)\s+(\d+)\s+(\d+)\s+(.*?)\s+(\d+.\d)/)
 
-        Instance.new($1.strip, :dom_id => $2.strip, :memory => $3.strip, :vcpus => $4.strip, :state => $5.strip.gsub("-","")) #:time => $6.strip)
+        { :name => $1.strip, :dom_id => $2.strip, :memory => $3.strip, :vcpus => $4.strip, :state => $5.strip.gsub("-","") }
       end
 
       def logger
@@ -72,6 +90,7 @@ module Xen
 
     def start
       System::Command.exec_command("xm create #{name}.cfg", :command_level => 2)
+      update_info
     end
 
     def reboot
@@ -131,6 +150,10 @@ module Xen
 
     def paused?
       state == STATE_PAUSED
+    end
+
+    def update_info
+      @memory, @dom_id, @vcpus, @state, @time = self.class.find_attributes_by_name(name).values_at(:memory, :dom_id, :vcpus, :state, :time)
     end
   end
 end
