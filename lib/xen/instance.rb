@@ -45,7 +45,7 @@ module Xen
           command = <<-cmd.split("\n").map { |l| l.strip }.join(' ').squeeze(' ')
             sudo xen-create-image --hostname=#{attributes[:name]} --ip=#{attributes[:ip]} --password=#{password[:stdout].strip}
                              --vcpus=#{attributes[:vcpus]} --memory=#{attributes[:memory]} --size=#{attributes[:size]}
-                             --arch=#{attributes[:arch]} --dist=#{attributes[:dist]} && sudo xm start #{attributes[:name]}.cfg > /dev/null 2>&1 &
+                             --arch=#{attributes[:arch]} --dist=#{attributes[:dist]} > /dev/null 2>&1 & && sudo xm start #{attributes[:name]}.cfg > /dev/null 2>&1 &
           cmd
 
           System::Command.exec_command(command, :command_level => 2)
