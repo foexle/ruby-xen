@@ -36,20 +36,20 @@ module Xen
 
       # Vars = :id, :name, :memory, :hdd, :cpus, :status
       def create(attributes = {})
-        logger.info("Creating new Xen instance with name #{attributes[:hostname]} ...")
+        logger.info("Creating new Xen instance with name #{attributes[:name]} ...")
 
         password = Xen::Util.generate_root_password
 
         if password[:exitstatus] == 0
           command = <<-cmd.split("\n").map { |l| l.strip }.join(" ").squeeze(' ')
-            xen-create-image --hostname=#{attributes[:hostname]} --ip=#{attributes[:ip]} --password=#{password[:stdout]}
+            xen-create-image --hostname=#{attributes[:name]} --ip=#{attributes[:ip]} --password=#{password[:stdout]}
                              --vcpus=#{attributes[:vcpus]} --memory=#{attributes[:memory]} --size=#{attributes[:size]}
                              --arch=#{attributes[:arch]} --dist=#{attributes[:dist]}
           cmd
 
           System::Command.exec_command(command, :command_level => 2)
 
-          find_by_name(attributes[:hostname])
+          find_by_name(attributes[:name])
         end
       end
 
