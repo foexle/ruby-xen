@@ -21,7 +21,7 @@ module Xen
       end
 
       def create(attributes = {})
-        Log::LibLoghandler.log(:log_level => LOG_LEVEL).info("Creating new Xen instance with name: #{attributes[:name]} ...")
+        logger.info("Creating new Xen instance with name: #{attributes[:name]} ...")
 
         password = Xen::Util.generate_root_password
 
@@ -43,11 +43,15 @@ module Xen
       end
 
       def instance_from_output(output)
-        Log::LibLoghandler.log({:log_level => LOG_LEVEL}).debug("Finding #{output} ...")
+        logger.debug("Finding #{output} ...")
 
         return unless output.match(/(.*)\s+(\d+)\s+(\d+)\s+(\d+)\s+(.*?)\s+(\d+.\d)/)
 
         Instance.new($1.strip, :dom_id => $2.strip, :memory => $3.strip, :vcpus => $4.strip, :state => $5.strip.gsub("-","")) #:time => $6.strip)
+      end
+
+      def logger
+        @@logger ||= Log::LibLoghandler.log(:log_level => Xen::Server::LOG_LEVEL)
       end
     end
 

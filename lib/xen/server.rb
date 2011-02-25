@@ -1,9 +1,9 @@
+require File.dirname(__FILE__) + '/instance'
+require File.dirname(__FILE__) + "/../log/loghandler"
+require File.dirname(__FILE__) + "/../system/command"
+
 module Xen
-  require File.dirname(__FILE__) + '/instance'
-  require File.dirname(__FILE__) + "/../log/loghandler"
-  require File.dirname(__FILE__) + "/../system/command"
   class Server
-    
     # Loglevel
     # => 1 DEBUG
     # => 2 Info
@@ -11,8 +11,18 @@ module Xen
     # => 4 Critcal
     LOG_LEVEL = 1
 
+    class << self
+      def logger
+        @@logger ||= Log::LibLoghandler.log(:log_level => LOG_LEVEL)
+      end
+    end
+
     def initialize
-      Log::LibLoghandler.log({:log_level => LOG_LEVEL}).info("Handling xen task ...")
+      logger.info("Handling xen task ...")
+    end
+
+    def logger
+      self.class.logger
     end
 
     # List all instaces on dom0
@@ -23,7 +33,7 @@ module Xen
       if output[:exitstatus] == 0
         instances = output[:stdout].split("\n")
         instances.each { |domu|
-          Log::LibLoghandler.log({:log_level => LOG_LEVEL}).debug("Finding #{domu} ...")
+          logger.debug("Finding #{domu} ...")
           domus[:domus].merge!(serialize_dom_info(domu))
         }
       end
@@ -40,7 +50,7 @@ module Xen
 
     # Vars = :id, :name, :memory, :hdd, :cpus, :status
     def create(vars)
-      Log::LibLoghandler.log({:log_level => LOG_LEVEL}).info("Creating new Xen instance with name: #{vars[:name]} ...")
+      logger.info("Creating new Xen instance with name: #{vars[:name]} ...")
       pw_return = Xen::Util.generate_root_password
 
       if pw_return[:exitstatus] == 0
