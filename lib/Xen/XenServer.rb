@@ -1,4 +1,5 @@
 module Xen
+  require 'XenInstance'
   class XenServer
     def initialize
       
@@ -72,19 +73,20 @@ module Xen
       end
     end
 
-  end
+  
 
-  private
+    private
 
-  def serialize_dom_info(domu)
-    domu.grep(/(.*)\s+(\d+)\s+(\d+)\s+(\d+)\s+(.*?)\s+(\d+.\d)/) {
-      domu_info[$1.strip] = XenInstance.new($1.strip,
-        :id => $2.strip,
-        :memory => $3.strip,
-        :vcpus => $4.strip,
-        :state => $5.strip,
-        :time => $6.strip )
-    }
-    return domu_info
+    def serialize_dom_info(domu)
+      domu.grep(/(.*)\s+(\d+)\s+(\d+)\s+(\d+)\s+(.*?)\s+(\d+.\d)/) {
+        domu_info[$1.strip] = XenInstance.new($1.strip,
+          :id => $2.strip,
+          :memory => $3.strip,
+          :vcpus => $4.strip,
+          :state => $5.strip,
+          :time => $6.strip )
+      }
+      return domu_info
+    end
   end
 end
