@@ -22,11 +22,11 @@ module System
     # ==Return
     # * +value_hash+    - stdout => Ausgabe der STDOUT (bei Fehlerfall ist die Fehlermessage enthalten)
     # =>                  exitstatus => Exitstatus des ausgeführten Kommandos
-    def self.exec_command(options = {})
+    def self.exec_command(command, options = {})
       return_hash = {}
       expected_exit = options[:expected_exit] || 0
 
-      return_hash[:stdout] = `#{options[:command]} 2>&1`
+      return_hash[:stdout] = `#{command} 2>&1`
       return_hash[:exitstatus] = $?.exitstatus
 
 

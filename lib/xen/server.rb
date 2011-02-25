@@ -18,7 +18,7 @@ module Xen
     # List all instaces on dom0
     def list_all
       domus = {:domus=>{}}
-      output = System::Command.exec_command({:command => "xm list" , :command_level => 1})
+      output = System::Command.exec_command("xm list" , :command_level => 1)
 
       if output[:exitstatus] == 0
         instances = output[:stdout].split("\n")
@@ -35,7 +35,7 @@ module Xen
     # ==Params:
     # * +:name+ - Name of instance
     def start(name)
-      return System::Command.exec_command({:command => "xm create #{name}.cfg", :command_level => 2})
+      return System::Command.exec_command("xm create #{name}.cfg", :command_level => 2)
     end
 
     # Vars = :id, :name, :memory, :hdd, :cpus, :status
@@ -43,9 +43,9 @@ module Xen
       Log::LibLoghandler.log({:log_level => LOG_LEVEL}).info("Creating new Xen instance with name: #{vars[:name]} ...")
       pw_return = generate_root_pw
       if pw_return[:exitstatus] == 0
-        return System::Command.exec_command({:command => "xen-create-image --hostname=#{vars[:name]} --vcpus=#{vars[:cpus]}
+        return System::Command.exec_command("xen-create-image --hostname=#{vars[:name]} --vcpus=#{vars[:cpus]}
                                             --password=#{pw_return[:stdout]} --arch=amd64 --dist=lucid --memory=#{vars[:memory]}
-                                            --size=#{vars[:hdd]}", :command_level => 2})
+                                            --size=#{vars[:hdd]}", :command_level => 2)
       end
       return pw
     end
@@ -54,7 +54,7 @@ module Xen
     def destroy(name)
       instance = self.get(name)
       if instance[:exitstatus] == 0
-        instance = System::Command.exec_command({:command => "xm destroy #{instance[:stdout]["#{name}"].dom_id}", :command_level => 1})
+        instance = System::Command.exec_command("xm destroy #{instance[:stdout]["#{name}"].dom_id}", :command_level => 1)
       end
       return instance
     end
@@ -63,16 +63,16 @@ module Xen
       instance = self.get(name)
       if instance[:exitstatus] == 0
         unless instance[:stdout]["#{name}"].status == "p"
-          System::Command.exec_command({:command => "xm pause #{instance[:stdout]["#{name}"].dom_id}", :command_level => 1})
+          System::Command.exec_command("xm pause #{instance[:stdout]["#{name}"].dom_id}", :command_level => 1)
         else
-          System::Command.exec_command({:command => "xm unpause #{instance[:stdout]["#{name}"].dom_id}", :command_level => 1})
+          System::Command.exec_command("xm unpause #{instance[:stdout]["#{name}"].dom_id}", :command_level => 1)
         end
       end
     end
 	
     # Get instance informations
     def get(name)
-      domu = System::Command.exec_command({:command => "xm list #{name}", :command_level => 1})
+      domu = System::Command.exec_command("xm list #{name}", :command_level => 1)
       if domu[:exitstatus] == 0
         domu[:stdout] = serialize_dom_info(domu[:stdout].split("\n").last)
       end
@@ -108,7 +108,7 @@ module Xen
     end
 
     def generate_root_pw()
-      return System::Command.exec_command({:command => "pwgen 16 1", :command_level => 1})
+      return System::Command.exec_command("pwgen 16 1", :command_level => 1)
 
     end
     
