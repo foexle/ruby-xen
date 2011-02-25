@@ -41,7 +41,8 @@ module Xen
     # Vars = :id, :name, :memory, :hdd, :cpus, :status
     def create(vars)
       Log::LibLoghandler.log({:log_level => LOG_LEVEL}).info("Creating new Xen instance with name: #{vars[:name]} ...")
-      pw_return = generate_root_pw
+      pw_return = Xen::Util.generate_root_password
+
       if pw_return[:exitstatus] == 0
         return System::Command.exec_command("xen-create-image --hostname=#{vars[:name]} --vcpus=#{vars[:cpus]}
                                             --password=#{pw_return[:stdout]} --arch=amd64 --dist=lucid --memory=#{vars[:memory]}
@@ -92,25 +93,19 @@ module Xen
 
     private
 
-    def serialize_dom_info(domu)
+      def serialize_dom_info(domu)
+        domu_info = {}
+        domu.grep(/(.*)\s+(\d+)\s+(\d+)\s+(\d+)\s+(.*?)\s+(\d+.\d)/) {
+          domu_info[$1.strip] = Instance.new($1.strip,
+            :dom_id => $2.strip,
+            :memory => $3.strip,
+            :vcpus => $4.strip,
+            :state => $5.strip.gsub("-",""))
+            #:time => $6.strip)
+        }
       
-      domu_info = {}
-      domu.grep(/(.*)\s+(\d+)\s+(\d+)\s+(\d+)\s+(.*?)\s+(\d+.\d)/) {
-        domu_info[$1.strip] = Instance.new($1.strip,
-          :dom_id => $2.strip,
-          :memory => $3.strip,
-          :vcpus => $4.strip,
-          :state => $5.strip.gsub("-",""))
-          #:time => $6.strip)
-      }
-      
-      return domu_info
-    end
-
-    def generate_root_pw()
-      return System::Command.exec_command("pwgen 16 1", :command_level => 1)
-
-    end
+        return domu_info
+      end
     
   end
 end
