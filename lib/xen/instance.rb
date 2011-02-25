@@ -1,5 +1,7 @@
 require 'log/logger'
 require 'system/command'
+require 'xen/server'
+require 'xen/util'
 
 module Xen
   class Instance
@@ -18,17 +20,17 @@ module Xen
 
         instance_from_output(output[:stdout].split("\n").last)
       end
-      alias :[], :find_by_name
+      alias :[] :find_by_name
 
       # Vars = :id, :name, :memory, :hdd, :cpus, :status
       def create(attributes = {})
-        logger.info("Creating new Xen instance with name: #{attributes[:name]} ...")
+        logger.info("Creating new Xen instance with name #{attributes[:hostname]} ...")
 
         password = Xen::Util.generate_root_password
 
         if password[:exitstatus] == 0
-          command = <<-cmd
-            xen-create-image --hostname=#{attributes[:hostname]} --password=#{password[:stdout]}
+          command = <<-cmd.split("\n").map { |l| l.strip }.join(" ").squeeze(' ')
+            xen-create-image --hostname=#{attributes[:hostname]} --ip=#{attributes[:ip]} --password=#{password[:stdout]}
                              --vcpus=#{attributes[:vcpus]} --memory=#{attributes[:memory]} --size=#{attributes[:size]}
                              --arch=#{attributes[:arch]} --dist=#{attributes[:dist]}
           cmd
@@ -87,6 +89,17 @@ module Xen
 
     def unpause
       System::Command.exec_command("xm unpause #{dom_id}", :command_level => 1) if paused?
+    end
+
+    def state_text
+      case state
+      when 'r': 'running'
+      when 'b': 'blocked'
+      when 's': 'shutdown'
+      when 'c': 'crashed'
+      when 'd': 'dying'
+      when 'p': 'paused'
+      end
     end
 
     def running?
