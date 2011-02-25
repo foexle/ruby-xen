@@ -27,7 +27,7 @@ module Xen
 
         if password[:exitstatus] == 0
           command = <<-cmd
-            xen-create-image --hostname=#{attributes[:name]} --password=#{attributes[:stdout]}
+            xen-create-image --hostname=#{attributes[:name]} --password=#{password}
                              --vcpus=#{attributes[:cpus]} --memory=#{attributes[:memory]} --size=#{attributes[:hdd]}
                              --arch=amd64 --dist=lucid
           cmd
