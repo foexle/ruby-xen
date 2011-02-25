@@ -64,6 +64,14 @@ module Xen
       System::Command.exec_command("xm create #{name}.cfg", :command_level => 2)
     end
 
+    def reboot
+      System::Command.exec_command("xm reboot #{dom_id}", :command_level => 2)
+    end
+
+    def shutdown
+      System::Command.exec_command("xm shutdown #{dom_id}", :command_level => 2)
+    end
+
     def migrate(destination)
       System::Command.exec_command("xm migrate --live #{name} #{destination}", :command_level => 2)
     end
@@ -78,6 +86,26 @@ module Xen
 
     def unpause
       System::Command.exec_command("xm unpause #{dom_id}", :command_level => 1) if paused?
+    end
+
+    def running?
+      state == 'r'
+    end
+
+    def blocked?
+      state == 'b'
+    end
+
+    def shutdown?
+      state == 's'
+    end
+
+    def crashed?
+      state == 'c'
+    end
+
+    def dying?
+      state == 'd'
     end
 
     def paused?
