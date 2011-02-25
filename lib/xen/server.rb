@@ -18,7 +18,6 @@ module Xen
     end
 
     def initialize
-      logger.info("Handling xen task ...")
     end
 
     def instances

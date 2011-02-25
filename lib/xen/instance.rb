@@ -3,6 +3,7 @@ require 'system/command'
 require 'xen/server'
 require 'xen/util'
 
+# TODO extract sudo to be used as an option
 module Xen
   class Instance
     STATE_RUNNING  = 'r'
@@ -16,21 +17,21 @@ module Xen
 
     class << self
       def all
-        output = System::Command.exec_command("xm list" , :command_level => 1)
+        output = System::Command.exec_command("sudo xm list" , :command_level => 1)
         return [] unless output[:exitstatus] == 0
 
         instances_from_output(output[:stdout])
       end
 
       def find_by_name(name)
-        output = System::Command.exec_command("xm list #{name}", :command_level => 1)
+        output = System::Command.exec_command("sudo xm list #{name}", :command_level => 1)
 
         instance_from_output(output[:stdout].split("\n").last)
       end
       alias :[] :find_by_name
 
       def find_attributes_by_name(name)
-        output = System::Command.exec_command("xm list #{name}", :command_level => 1)
+        output = System::Command.exec_command("sudo xm list #{name}", :command_level => 1)
         attributes_from_output(output[:stdout])
       end
 
@@ -91,32 +92,32 @@ module Xen
     end
 
     def start
-      System::Command.exec_command("xm create #{name}.cfg", :command_level => 2)
+      System::Command.exec_command("sudo xm create #{name}.cfg", :command_level => 2)
       update_info
     end
 
     def reboot
-      System::Command.exec_command("xm reboot #{dom_id}", :command_level => 2)
+      System::Command.exec_command("sudo xm reboot #{dom_id}", :command_level => 2)
     end
 
     def shutdown
-      System::Command.exec_command("xm shutdown #{dom_id}", :command_level => 2)
+      System::Command.exec_command("sudo xm shutdown #{dom_id}", :command_level => 2)
     end
 
     def migrate(destination)
-      System::Command.exec_command("xm migrate --live #{name} #{destination}", :command_level => 2)
+      System::Command.exec_command("sudo xm migrate --live #{name} #{destination}", :command_level => 2)
     end
 
     def destroy
-      System::Command.exec_command("xm destroy #{dom_id}", :command_level => 1)
+      System::Command.exec_command("sudo xm destroy #{dom_id}", :command_level => 1)
     end
 
     def pause
-      System::Command.exec_command("xm pause #{dom_id}", :command_level => 1) unless paused?
+      System::Command.exec_command("sudo xm pause #{dom_id}", :command_level => 1) unless paused?
     end
 
     def unpause
-      System::Command.exec_command("xm unpause #{dom_id}", :command_level => 1) if paused?
+      System::Command.exec_command("sudo xm unpause #{dom_id}", :command_level => 1) if paused?
     end
 
     def state_text
