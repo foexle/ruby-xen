@@ -42,15 +42,15 @@ module Xen
         password = Xen::Util.generate_root_password
 
         if password[:exitstatus] == 0
-          command = <<-cmd.split("\n").map { |l| l.strip }.join(" ").squeeze(' ')
-            sudo xen-create-image --hostname=#{attributes[:name]} --ip=#{attributes[:ip]} --password=#{password[:stdout]}
+          command = <<-cmd.split("\n").map { |l| l.strip }.join(' ').squeeze(' ')
+            sudo xen-create-image --hostname=#{attributes[:name]} --ip=#{attributes[:ip]} --password=#{password[:stdout].strip}
                              --vcpus=#{attributes[:vcpus]} --memory=#{attributes[:memory]} --size=#{attributes[:size]}
                              --arch=#{attributes[:arch]} --dist=#{attributes[:dist]} && sudo xm start #{attributes[:name]}.cfg > /dev/null 2>&1 &
           cmd
 
           System::Command.exec_command(command, :command_level => 2)
 
-          attributes.merge(:password => password[:stdout])
+          attributes.merge(:password => password[:stdout].strip)
         end
       end
 
