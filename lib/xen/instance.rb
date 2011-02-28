@@ -57,7 +57,7 @@ module Xen
       def start(name)
         instance = new(name)
         instance.start
-        instance
+        return instance
       end
 
       def instances_from_output(output)
@@ -85,6 +85,10 @@ module Xen
         @@logger ||= Log::Logger.log(:log_level => Xen::Server::LOG_LEVEL)
       end
     end
+
+
+
+    
 
     def initialize(name, options = {})
       @name = name

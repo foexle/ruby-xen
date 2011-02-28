@@ -1,39 +1,74 @@
-A very simple ruby module to access Xen informations.
+A simple ruby module to admin xen instances
+This gem includes a log mechanism (log4r) with various modes (DEBUG, INFO, WARN ...).
+
 
 How to use it :
 
-x=Xen::XenServer.new
+###########################
+# To get instance informations
+instance = Xen::Instance.find_by_name(name)
 
-puts x.has? "non-existant"
-puts x.has? "domu2"
-puts x.slices
+# To get all instaces
+puts Xen::Instance.all
 
-s=x.get("domu2")
-s2=x.get("Domain-0")
+###########################
+# To start an instance
 
-puts s.time
-puts s2.time
-sleep(10)
-x.update
-puts s.time
-puts s2.time
+instance.start(name)
 
-# live migrate VM "domu2" to host "10.0.0.2"
-x.migrate("domu2", "10.0.0.2")
+# or
+instance = Xen::Instance.find_by_name(name)
+instance.start
 
-# pause VM "domu2"
-x.pause("domu2")
+# or
+instance = Xen::Instance.new(name)
+instance.start
 
-# create & destroy a domU
-x.create("domu2")
-x.destroy("domu2")
+###########################
+# To create a new instance 
+# attributes includes {:mem => "", :size => "", :name => "", :ip => "", :vcpus: => "",
+# :arch => "", :dist => ""}
+# mem   = Memory
+# size  = HDD size
+# name  = Hostname
+# ip    = Ip address
+# vcpus = Virtual cpu's
+# arch  = System architecture [i386|amd64]
+# dist  = distribution [lucid, hardy, etc.]
+Xen::Instance.create(attributes)
+
+##########################
+# Instance actions
+instance = Xen::Instance.find_by_name(name)
+
+# start
+instance.start
+
+# stop
+instance.shutdown
+
+# reboot
+instance.reboot
+
+# pause
+instance.pause
+
+# unpause
+instance.unpause
+
+# kill
+instance.destroy
 
 
-TODO :
 
-- work on configuration of the VMs (read/modify/write)
-
+##################################
 Creating & installing the gem :
 
 gem build xen.gemspec
 sudo gem install xen-<version>.gem
+
+
+todo:
+- Xen::Instance.create have a small bug (timeout)
+- Tests
+
