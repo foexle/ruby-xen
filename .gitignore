@@ -13,3 +13,5 @@ config/database.yml
 .rvmrc
 public/videos
 config/newrelic.yml
+pkg/*
+pkg
