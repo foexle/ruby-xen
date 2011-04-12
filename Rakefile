@@ -13,7 +13,7 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-  gem.name = "ruby-xen"
+  gem.name = "xen-ruby"
   gem.homepage = "http://github.com/foexle/ruby-xen"
   gem.license = "GPL"
   gem.summary = %Q{simple gem to controle xen dom0}
@@ -49,7 +49,7 @@ Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : "0.7"
 
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "ruby-xen #{version}"
+  rdoc.title = "xen-ruby #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
