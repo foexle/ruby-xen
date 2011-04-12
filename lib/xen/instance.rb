@@ -16,23 +16,32 @@ module Xen
     attr_accessor :dom_id, :name, :memory, :vcpus, :state, :time
 
     class << self
-      def all
-        output = System::Command.exec_command("sudo xm list" , :command_level => 1)
-        return [] unless output[:exitstatus] == 0
 
-        instances_from_output(output[:stdout])
+      # Gets all running instances on dom0
+      def all
+        get_all = System::Command.new("sudo xm list" , :command_level => 1)
+        get_all.execute
+        return [] unless get_all.exit_status == 0
+
+        instances_from_output(get_all.output)
       end
 
+      # Gets an instance object
+      # ==Params:
+      # => +name+:  Name of instance
       def find_by_name(name)
-        output = System::Command.exec_command("sudo xm list #{name}", :command_level => 1)
-
-        instance_from_output(output[:stdout].split("\n").last)
+        find = System::Command.new("sudo xm list #{name}", :command_level => 1)
+        find.execute
+        instance_from_output(find.output.split("\n").last)
       end
       alias :[] :find_by_name
 
+      # Gets all attributs of an instance
+      
       def find_attributes_by_name(name)
-        output = System::Command.exec_command("sudo xm list #{name}", :command_level => 1)
-        attributes_from_output(output[:stdout])
+        find = System::Command.new("sudo xm list #{name}", :command_level => 1)
+        find.execute
+        attributes_from_output(find.output)
       end
 
       # Vars = :id, :name, :memory, :hdd, :cpus, :status
@@ -41,16 +50,16 @@ module Xen
 
         password = Xen::Util.generate_root_password
 
-        if password[:exitstatus] == 0
+        if password.exit_status == 0
           command = <<-cmd.split("\n").map { |l| l.strip }.join(' ').squeeze(' ')
             sudo xen-create-image --hostname=#{attributes[:name]} --ip=#{attributes[:ip]} --password=#{password[:stdout].strip}
                              --vcpus=#{attributes[:vcpus]} --memory=#{attributes[:memory]} --size=#{attributes[:size]}
-                             --arch=#{attributes[:arch]} --dist=#{attributes[:dist]} && sudo xm start #{attributes[:name]}.cfg &
+                             --arch=#{attributes[:arch]} --dist=#{attributes[:dist]}&
           cmd
 
-          System::Command.exec_command(command, :command_level => 2)
-
-          attributes.merge(:password => password[:stdout].strip)
+          create_image = System::Command.new(command, :command_level => 2)
+          create_image.execute
+          attributes.merge(:password => password.output.strip)
         end
       end
 
@@ -96,32 +105,43 @@ module Xen
     end
 
     def start
-      System::Command.exec_command("sudo xm create #{name}.cfg", :command_level => 2)
+      start = System::Command.new("sudo xm create #{name}.cfg", :command_level => 2)
+      start.execute
       update_info
     end
 
     def reboot
-      System::Command.exec_command("sudo xm reboot #{dom_id}", :command_level => 2)
+      reboot = System::Command.new("sudo xm reboot #{dom_id}", :command_level => 2)
+      reboot.execute
     end
 
     def shutdown
-      System::Command.exec_command("sudo xm shutdown #{dom_id}", :command_level => 2)
+      shutdown = System::Command.new("sudo xm shutdown #{dom_id}", :command_level => 2)
+      shutdown.execute
     end
 
     def migrate(destination)
-      System::Command.exec_command("sudo xm migrate --live #{name} #{destination}", :command_level => 2)
+      migrate = System::Command.new("sudo xm migrate --live #{name} #{destination}", :command_level => 2)
+      migrate.execute
     end
 
     def destroy
-      System::Command.exec_command("sudo xm destroy #{dom_id}", :command_level => 1)
+      destroy = System::Command.new("sudo xm destroy #{dom_id}", :command_level => 1)
+      destroy.execute
     end
 
     def pause
-      System::Command.exec_command("sudo xm pause #{dom_id}", :command_level => 1) unless paused?
+      unless paused?
+        pause = System::Command.new("sudo xm pause #{dom_id}", :command_level => 1)
+        pause.execute
+      end
     end
 
     def unpause
-      System::Command.exec_command("sudo xm unpause #{dom_id}", :command_level => 1) if paused?
+      if paused?
+        unpause = System::Command.new("sudo xm unpause #{dom_id}", :command_level => 1)
+        unpause.execute
+      end
     end
 
     def state_text
