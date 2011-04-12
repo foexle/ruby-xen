@@ -45,16 +45,23 @@ module Xen
       end
 
       # Vars = :id, :name, :memory, :hdd, :cpus, :status
+      # Note: debootstrap installation is the slowest, better are copy in xen
       def create(attributes = {})
         logger.info("Creating new Xen instance with name #{attributes[:name]} ...")
 
+        exist_instance = find_by_name(attributes[:name])
+        if exist_instance
+          Logger.info("Running instance detected. Shutting down to create a new one")
+          exist_instance.shutdown
+        end
+        
         password = Xen::Util.generate_root_password
 
         if password.exit_status == 0
           command = <<-cmd.split("\n").map { |l| l.strip }.join(' ').squeeze(' ')
             sudo xen-create-image --hostname=#{attributes[:name]} --ip=#{attributes[:ip]} --password=#{password[:stdout].strip}
                              --vcpus=#{attributes[:vcpus]} --memory=#{attributes[:memory]} --size=#{attributes[:size]}
-                             --arch=#{attributes[:arch]} --dist=#{attributes[:dist]}&
+                             --arch=#{attributes[:arch]} --dist=#{attributes[:dist]} --force &
           cmd
 
           create_image = System::Command.new(command, :command_level => 2)
@@ -109,6 +116,7 @@ module Xen
       start.execute
       update_info
     end
+
 
     def reboot
       reboot = System::Command.new("sudo xm reboot #{dom_id}", :command_level => 2)

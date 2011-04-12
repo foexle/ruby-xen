@@ -1,5 +1,5 @@
 $LOAD_PATH.unshift 'lib'
-require "ruby-xen/VERSION"
+VERSION=0.7
 
 Gem::Specification.new do |s|
 s.name = "ruby-xen"

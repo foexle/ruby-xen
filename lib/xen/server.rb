@@ -23,6 +23,7 @@ module Xen
     def instances
       Xen::Instance.all
     end
+    
 
     def logger
       self.class.logger
