@@ -65,8 +65,8 @@ module Xen
           cmd
 
           create_image = System::Command.new(command, :command_level => 2)
-          create_image.execute
           attributes.merge(:password => password.output.strip)
+          create_image.execute
         end
       end
 

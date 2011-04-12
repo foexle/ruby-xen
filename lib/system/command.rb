@@ -24,6 +24,7 @@ module System
       @output = `#{command} 2>&1`
       @exit_status  = $?.exitstatus
       log if error?
+      return self
     end
 
     def error?
