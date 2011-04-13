@@ -32,7 +32,7 @@ module Xen
       def find_by_name(name)
         find = System::Command.new("sudo xm list #{name}", :command_level => 1)
         find.execute
-        instance_from_output(find.output.split("\n").last)
+        instance_from_output(find.output.split("\n").last) if find.exit_status == 0
       end
       alias :[] :find_by_name
 
@@ -41,7 +41,7 @@ module Xen
       def find_attributes_by_name(name)
         find = System::Command.new("sudo xm list #{name}", :command_level => 1)
         find.execute
-        attributes_from_output(find.output)
+        attributes_from_output(find.output) if find.exit_status == 0
       end
 
       # Vars = :id, :name, :memory, :hdd, :cpus, :status
