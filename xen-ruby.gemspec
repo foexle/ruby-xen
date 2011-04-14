@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Heiko Kr\303\244mer", "Clemens Kofler"]
-  s.date = %q{2011-04-12}
+  s.date = %q{2011-04-14}
   s.description = %q{simple gem to controle xen dom0}
   s.email = %q{kraemer@avarteq.de}
   s.extra_rdoc_files = [
@@ -28,7 +28,7 @@ Gem::Specification.new do |s|
     "lib/xen/instance.rb",
     "lib/xen/server.rb",
     "lib/xen/util.rb",
-    "ruby-xen.gemspec"
+    "xen-ruby.gemspec"
   ]
   s.homepage = %q{http://github.com/foexle/ruby-xen}
   s.licenses = ["GPL"]
