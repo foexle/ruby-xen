@@ -2,6 +2,8 @@ A simple ruby module to admin xen instances
 This gem includes a log mechanism (log4r) with various modes (DEBUG, INFO, WARN ...).
 
 
+gem install xen-ruby
+
 How to use it :
 
 ###########################
