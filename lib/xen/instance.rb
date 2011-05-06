@@ -37,14 +37,13 @@ module Xen
       alias :[] :find_by_name
 
       # Gets all attributs of an instance
-      
       def find_attributes_by_name(name)
         find = System::Command.new("sudo xm list #{name}", :command_level => 1)
         find.execute
         attributes_from_output(find.output) if find.exit_status == 0
       end
 
-      # Vars = :id, :name, :memory, :hdd, :cpus, :status
+      # Vars = :id, :name, :memory, :size, :vcpus, :arch, :dist
       # Note: debootstrap installation is the slowest, better are copy in xen
       def create(attributes = {})
         logger.info("Creating new Xen instance with name #{attributes[:name]} ...")
@@ -151,6 +150,7 @@ module Xen
       end
     end
 
+    # Which state have the instance
     def state_text
       case state
       when STATE_RUNNING: 'running'

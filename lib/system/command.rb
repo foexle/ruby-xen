@@ -1,5 +1,12 @@
 require 'log/logger'
 
+# This class is for executing any system command. All ruby implemented system commands like ` ` or system() are
+# not strong and effectivly enough.
+# You have the opportunity to set a command_level, you own failure message and an expected_exit_status.
+#
+# Command_level: This means how importend is the exit_code > 0 to the running application
+# Expected_exit_status: Sometime you have a system command they runs without errors or only a warning but with an other exit code as 0.
+# Message: Your own failure message.
 module System
   class Command
     LEVEL_WARN  = 1
