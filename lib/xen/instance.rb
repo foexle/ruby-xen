@@ -114,7 +114,6 @@ module Xen
     def start
       start = System::Command.new("sudo xm create #{name}.cfg", :command_level => 2)
       start.execute
-      update_info
     end
 
 
