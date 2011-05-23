@@ -1,5 +1,5 @@
 require 'log/logger'
-
+require 'system/exception'
 # This class is for executing any system command. All ruby implemented system commands like ` ` or system() are
 # not strong and effectivly enough.
 # You have the opportunity to set a command_level, you own failure message and an expected_exit_status.
@@ -44,8 +44,12 @@ module System
 
     def log
       case @command_level
-      when LEVEL_WARN: logger.warn(error_message)
-      when LEVEL_FATAL: logger.fatal(error_message)
+      when LEVEL_WARN: 
+          logger.warn(error_message)
+          raise System::Exception::WarningException.new(error_message, command, exit_status)
+      when LEVEL_FATAL: 
+          logger.fatal(error_message)
+          raise System::Exception::CriticalException.new(error_message, command, exit_status)
       end
     end
 

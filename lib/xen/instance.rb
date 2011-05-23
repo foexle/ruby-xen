@@ -19,7 +19,7 @@ module Xen
 
       # Gets all running instances on dom0
       def all
-        get_all = System::Command.new("sudo xm list" , :command_level => 1)
+        get_all = System::Command.new("sudo xm list" , :command_level => 2)
         get_all.execute
         return [] unless get_all.exit_status == 0
 
@@ -30,7 +30,8 @@ module Xen
       # ==Params:
       # => +name+:  Name of instance
       def find_by_name(name)
-        find = System::Command.new("sudo xm list #{name}", :command_level => 1)
+        find = System::Command.new("sudo xm list #{name}", :command_level => 1,
+                                  :message => "Can't find running domU with name: #{name}")
         find.execute
         instance_from_output(find.output.split("\n").last) if find.exit_status == 0
       end
@@ -63,7 +64,7 @@ module Xen
                              --arch=#{attributes[:arch]} --dist=#{attributes[:dist]} --force &
           cmd
 
-          create_image = System::Command.new(command, :command_level => 2)
+          create_image = System::Command.new(command, :command_level => 2, :message => "Can't create #{attributes[:name]} domU.")
           attributes.merge(:password => password.output.strip)
           create_image.execute
         end
@@ -111,41 +112,46 @@ module Xen
     end
 
     def start
-      start = System::Command.new("sudo xm create #{name}.cfg", :command_level => 2)
+      start = System::Command.new("sudo xm create #{name}.cfg", :command_level => 2, :message => "Can't start #{name} domU")
       start.execute
     end
 
 
     def reboot
-      reboot = System::Command.new("sudo xm reboot #{dom_id}", :command_level => 2)
+      reboot = System::Command.new("sudo xm reboot #{dom_id}", :command_level => 2, :message => "Can't reboot #{name} domU")
       reboot.execute
     end
 
     def shutdown
-      shutdown = System::Command.new("sudo xm shutdown #{dom_id}", :command_level => 2)
+      shutdown = System::Command.new("sudo xm shutdown #{dom_id}", :command_level => 2, :message => "Can't shutdown #{name} domU")
       shutdown.execute
     end
 
     def migrate(destination)
-      migrate = System::Command.new("sudo xm migrate --live #{name} #{destination}", :command_level => 2)
+      migrate = System::Command.new("sudo xm migrate --live #{name} #{destination}", 
+                            :command_level => 2,
+                            :message => "Can't migrate #{name} domU to #{destination}")
       migrate.execute
     end
 
     def destroy
-      destroy = System::Command.new("sudo xm destroy #{dom_id}", :command_level => 1)
+      destroy = System::Command.new("sudo xm destroy #{dom_id}", :command_level => 2,
+                            :message => "Can't destroy #{name} domU")
       destroy.execute
     end
 
     def pause
       unless paused?
-        pause = System::Command.new("sudo xm pause #{dom_id}", :command_level => 1)
+        pause = System::Command.new("sudo xm pause #{dom_id}", :command_level => 1,
+                            :message => "Can't pause #{name} domU")
         pause.execute
       end
     end
 
     def unpause
       if paused?
-        unpause = System::Command.new("sudo xm unpause #{dom_id}", :command_level => 1)
+        unpause = System::Command.new("sudo xm unpause #{dom_id}", :command_level => 1,
+                            :message => "Can't unpause #{name} domU")
         unpause.execute
       end
     end
