@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Heiko Kr\303\244mer", "Clemens Kofler"]
-  s.date = %q{2011-04-14}
+  s.date = %q{2011-05-23}
   s.description = %q{simple gem to controle xen dom0}
   s.email = %q{kraemer@avarteq.de}
   s.extra_rdoc_files = [
@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
     "VERSION",
     "lib/log/logger.rb",
     "lib/system/command.rb",
+    "lib/system/exception.rb",
     "lib/xen/instance.rb",
     "lib/xen/server.rb",
     "lib/xen/util.rb",
