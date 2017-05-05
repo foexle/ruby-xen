@@ -44,10 +44,10 @@ module System
 
     def log
       case @command_level
-      when LEVEL_WARN: 
+      when LEVEL_WARN
           logger.warn(error_message)
           raise System::Exception::WarningException.new(error_message, command, exit_status)
-      when LEVEL_FATAL: 
+      when LEVEL_FATAL 
           logger.fatal(error_message)
           raise System::Exception::CriticalException.new(error_message, command, exit_status)
       end
